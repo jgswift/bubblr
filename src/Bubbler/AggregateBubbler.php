@@ -2,12 +2,13 @@
 namespace bubblr\Bubbler {
     use bubblr\Spout\AggregateSpout;
     use bubblr\Bubble\BubbleAdapter;
+    use bubblr\Spout\SpoutInterface;
     
     class AggregateBubbler implements BubblerInterface {
         private $spouts = [];
         private $adapter;
         
-        public function attach(\bubblr\Spout\SpoutInterface $spout) {
+        public function attach(SpoutInterface $spout) {
             $this->spouts[] = $spout;
             $this->adapter = new BubbleAdapter;
         }
@@ -16,7 +17,7 @@ namespace bubblr\Bubbler {
             return $this->adapter;
         }
 
-        public function detach(\bubblr\Spout\SpoutInterface $spout) {
+        public function detach(SpoutInterface $spout) {
             $key = array_search($spout,$this->spouts);
             if($key) {
                 unset($this->spouts[$key]);
@@ -40,7 +41,7 @@ namespace bubblr\Bubbler {
         }
 
         public function getSpout() {
-            return new AggregateSpout($this->spouts);
+            return new AggregateSpout($this->spouts, $this);
         }
     }
 }

@@ -4,20 +4,22 @@ namespace bubblr\Spout {
     use bubblr\Bubble\BubbleInterface;
     
     trait SpoutTrait {
-        private $bubbles = [];
+        protected $bubbles = [];
         
         /**
          *
          * @var bubblr\Bubbler\BubblerInterface
          */
-        private $bubbler;
-        private $cursor = 0;
-        private $enabled = false;
+        protected $bubbler;
+        protected $cursor = 0;
+        protected $enabled = false;
         
-        public function __construct(BubblerInterface $bubbler) {
-            $this->bubbler = $bubbler;
+        public function __construct(BubblerInterface $bubbler=null) {
             $this->bubbles = [];
-            $this->resume();
+            
+            if($bubbler instanceof BubblerInterface) {
+                $this->setBubbler($bubbler);
+            }
         }
     
         public function execute($bubble=null) {
@@ -45,6 +47,12 @@ namespace bubblr\Spout {
         }
 
         public function getBubbler() {
+            return $this->bubbler;
+        }
+        
+        public function setBubbler(BubblerInterface $bubbler) {
+            $this->bubbler = $bubbler;
+            $this->resume();
             return $this->bubbler;
         }
 

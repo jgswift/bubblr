@@ -13,6 +13,24 @@ namespace bubblr\Tests {
             $this->assertEquals(1,$c);
         }
         
+        function testAggregateSpout() {
+            $bubbler = new bubblr\Bubbler\AggregateBubbler;
+            $spout1 = new bubblr\Bubbler\BubblerSpout();
+            $spout2 = new bubblr\Bubbler\BubblerSpout();
+            
+            $aggrSpout = new bubblr\Spout\AggregateSpout([$spout1,$spout2], $bubbler);
+            
+            $c=0;
+            $bubbler->execute(function()use(&$c) {
+                $c++;
+            });
+            
+            $spout = $bubbler->getSpout();
+            
+            $this->assertInstanceOf('bubblr\Spout\AggregateSpout',$spout);
+            $this->assertEquals(2,$c);
+        }
+        
         function testCallableBubble() {
             $bubbler = new bubblr\Bubbler\AggregateBubbler;
             
