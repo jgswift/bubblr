@@ -5,12 +5,16 @@ namespace bubblr\Bubbler {
     use bubblr\Spout\SpoutInterface;
     
     class AggregateBubbler implements BubblerInterface {
-        private $spouts = [];
+        protected $spout;
         private $adapter;
         
-        public function attach(SpoutInterface $spout) {
-            $this->spouts[] = $spout;
+        public function __construct() {
+            $this->spout = new AggregateSpout([],$this);
             $this->adapter = new BubbleAdapter;
+        }
+        
+        public function attach(SpoutInterface $spout) {
+            $this->spout->spouts[] = $spout;
         }
         
         public function getAdapter() {
@@ -18,30 +22,31 @@ namespace bubblr\Bubbler {
         }
 
         public function detach(SpoutInterface $spout) {
-            $key = array_search($spout,$this->spouts);
+            $key = array_search($spout,$this->spout);
             if($key) {
-                unset($this->spouts[$key]);
+                unset($this->spout[$key]);
             }
         }
 
         public function execute($bubble = null) {
-            if(empty($this->spouts)) {
-                new BubblerSpout($this);
+            if(count($this->spout) === 0) {
+                $this->attach(new BubblerSpout);
             }
             
-            foreach($this->spouts as $spout) {
+            foreach($this->spout as $spout) {
+                $spout->setBubbler($this);
                 $spout->execute($bubble);
             }
         }
 
         public function stop() {
-            foreach($this->spouts as $spout) {
+            foreach($this->spout as $spout) {
                 $spout->stop();
             }
         }
 
         public function getSpout() {
-            return new AggregateSpout($this->spouts, $this);
+            return $this->spout;
         }
     }
 }

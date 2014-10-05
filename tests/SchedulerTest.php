@@ -15,10 +15,8 @@ namespace bubblr\Tests {
         
         function testAggregateSpout() {
             $bubbler = new bubblr\Bubbler\AggregateBubbler;
-            $spout1 = new bubblr\Bubbler\BubblerSpout();
-            $spout2 = new bubblr\Bubbler\BubblerSpout();
-            
-            $aggrSpout = new bubblr\Spout\AggregateSpout([$spout1,$spout2], $bubbler);
+            $spout1 = new bubblr\Bubbler\BubblerSpout($bubbler);
+            $spout2 = new bubblr\Bubbler\BubblerSpout($bubbler);
             
             $c=0;
             $bubbler->execute(function()use(&$c) {

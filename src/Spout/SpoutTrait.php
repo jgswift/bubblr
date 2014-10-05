@@ -89,25 +89,5 @@ namespace bubblr\Spout {
             $this->enabled = true;
             $this->bubbler->attach($this);
         }
-
-        public function key() {
-            return key($this->bubbles);
-        }
-        
-        public function current() {
-            return current($this->bubbles);
-        }
-
-        public function next() {
-            next($this->bubbles);
-        }
-
-        public function rewind() {
-            reset($this->bubbles);
-        }
-
-        public function valid() {
-            return (current($this->bubbles) !== false);
-        }
     }
 }

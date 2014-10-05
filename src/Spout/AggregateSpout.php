@@ -1,15 +1,18 @@
 <?php
 namespace bubblr\Spout {
-    use bubblr\Bubbler\BubblerSpout;
     use bubblr\Bubble\BubbleInterface;
     use bubblr\Bubbler\BubblerInterface;
+    use observr\Subject\SubjectInterface;
+    use bubblr\Spout\SpoutInterface;
+    use observr\Subject;
     
-    class AggregateSpout extends BubblerSpout {
-        protected $spouts;
+    class AggregateSpout implements SpoutInterface, SubjectInterface, \IteratorAggregate, \Countable {
+        use SpoutTrait, Subject;
+        public $spouts;
         
         public function __construct(array $spouts, BubblerInterface $bubbler) {
             $this->spouts = $spouts;
-            parent::__construct($bubbler);
+            $this->bubbler = $bubbler;
         }
         
         public function execute($bubble = null) {
@@ -21,8 +24,54 @@ namespace bubblr\Spout {
             return $this;
         }
         
+        public function count() {
+            return count($this->spouts);
+        }
+        
         public function invoke(BubbleInterface $bubble) {
             
+        }
+        
+        public function stop() {
+            foreach($this->spouts as $spout) {
+                $spout->stop();
+            }
+        }
+        
+        public function push(BubbleInterface $bubble) {
+            foreach($this->spouts as $spout) {
+                $spout->push($bubble);
+                break;
+            }
+        }
+        
+        public function pop() {
+            foreach($this->spouts as $spout) {
+                $bubble = $spout->pop();
+                if(!empty($bubble)) {
+                    return $bubble;
+                }
+            }
+        }
+
+        public function offsetExists($offset) {
+            return isset($this->spouts[$offset]);
+        }
+
+        public function offsetGet($offset) {
+            return $this->spouts[$offset];
+        }
+
+        public function offsetSet($offset, $value) {
+            $this->spouts[$offset] = $value;
+        }
+
+        public function offsetUnset($offset) {
+            unset($this->spouts[$offset]);
+        }
+        
+        public function getIterator() {
+            return new \ArrayIterator($this->spouts);
         }
     }
 }
