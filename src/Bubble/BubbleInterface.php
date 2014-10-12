@@ -7,6 +7,6 @@ namespace bubblr\Bubble {
         public function getResult();
         public function cancel();
         public function resume(SpoutInterface $spout);
-        public function stop(SpoutInterface $spout);
+        public function suspend(SpoutInterface $spout);
     }
 }

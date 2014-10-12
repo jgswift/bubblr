@@ -5,10 +5,12 @@ namespace bubblr\Bubble {
     abstract class BubbleTask implements BubbleInterface {
         use BubbleTrait;
         
-        abstract public function resume(SpoutInterface $spout);
+        public function resume(SpoutInterface $spout) {
+            $spout->resume();
+        }
         
-        public function stop(SpoutInterface $spout) {
-            $spout->stop();
+        public function suspend(SpoutInterface $spout) {
+            $spout->suspend();
         }
         
         public function cancel() {

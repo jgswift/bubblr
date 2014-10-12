@@ -23,7 +23,7 @@ namespace bubblr\Bubble {
         
         abstract public function resume(SpoutInterface $spout);
         
-        abstract public function stop(SpoutInterface $spout);
+        abstract public function suspend(SpoutInterface $spout);
         
         public function isSuccess() {
             return (!$this->canceled) && $this->complete && (!$this->failure);

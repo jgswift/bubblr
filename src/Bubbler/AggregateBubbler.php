@@ -8,8 +8,11 @@ namespace bubblr\Bubbler {
         protected $spout;
         private $adapter;
         
-        public function __construct() {
-            $this->spout = new AggregateSpout([],$this);
+        public function __construct(SpoutInterface $spout = null) {
+            if(is_null($spout)) {
+                $spout = new BubblerSpout;
+            }
+            $this->spout = new AggregateSpout([$spout],$this);
             $this->adapter = new BubbleAdapter;
         }
         
@@ -29,19 +32,22 @@ namespace bubblr\Bubbler {
         }
 
         public function execute($bubble = null) {
-            if(count($this->spout) === 0) {
-                $this->attach(new BubblerSpout);
-            }
-            
             foreach($this->spout as $spout) {
                 $spout->setBubbler($this);
                 $spout->execute($bubble);
             }
         }
-
-        public function stop() {
+        
+        public function resume() {
             foreach($this->spout as $spout) {
-                $spout->stop();
+                $spout->setBubbler($this);
+                $spout->resume();
+            }
+        }
+
+        public function suspend() {
+            foreach($this->spout as $spout) {
+                $spout->suspend();
             }
         }
 

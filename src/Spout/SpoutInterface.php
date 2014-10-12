@@ -8,7 +8,6 @@ namespace bubblr\Spout {
         public function pop();
         public function invoke(BubbleInterface $bubble);
         public function suspend();
-        public function stop();
         public function resume();
     }
 }

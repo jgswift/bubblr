@@ -29,8 +29,8 @@ namespace bubblr\Bubbler {
             return $this->spout->execute($bubble);
         }
 
-        public function stop() {
-            return $this->spout->stop();
+        public function suspend() {
+            return $this->spout->suspend();
         }
 
         public function getSpout() {

@@ -29,12 +29,20 @@ namespace bubblr\Spout {
         }
         
         public function invoke(BubbleInterface $bubble) {
-            
+            foreach($this->spouts as $spout) {
+                $spout->invoke($bubble);
+            }
         }
         
-        public function stop() {
+        public function suspend() {
             foreach($this->spouts as $spout) {
-                $spout->stop();
+                $spout->suspend();
+            }
+        }
+        
+        public function resume() {
+            foreach($this->spouts as $spout) {
+                $spout->resume();
             }
         }
         

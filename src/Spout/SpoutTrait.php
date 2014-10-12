@@ -24,7 +24,7 @@ namespace bubblr\Spout {
     
         public function execute($bubble=null) {
             if(!$this->enabled) {
-                return;
+                throw new Exception\SpoutDisabledException($this);
             }
             
             if($bubble instanceof BubbleInterface) {
@@ -64,11 +64,6 @@ namespace bubblr\Spout {
 
         public function push(BubbleInterface $bubble) {
             array_push($this->bubbles,$bubble);
-        }
-
-        public function stop() {
-            $this->bubbles = [];
-            $this->enabled = false;
         }
 
         public function suspend() {
