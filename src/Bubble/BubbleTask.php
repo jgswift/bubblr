@@ -13,9 +13,5 @@ namespace bubblr\Bubble {
         public function suspend(SpoutInterface $spout) {
             $spout->suspend();
         }
-        
-//        public function cancel() {
-//            $this->canceled = true;
-//        }
     }
 }

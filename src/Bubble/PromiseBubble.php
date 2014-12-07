@@ -18,7 +18,6 @@ namespace bubblr\Bubble {
             $this->promise->then(
                 function($result = null) {
                     $this->complete($this);
-                    //$this->complete = true;
                     $this->result = $result;
                 },
                 function($reason) {

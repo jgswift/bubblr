@@ -4,7 +4,6 @@ namespace bubblr\Bubble {
     use bubblr\Exception;
     
     class EmptyBubble extends BubbleTask {
-        
         public function resume(SpoutInterface $spout) {
             throw new Exception('Cannot run empty bubble');
         }
