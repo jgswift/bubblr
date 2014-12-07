@@ -9,12 +9,13 @@ namespace bubblr\Bubble {
             $this->count = $count;
             
             $generator = function()use($callable,$count) {
+                $context = yield;
                 for($i=1;$i<=$count;$i++) {
                     if($callable instanceof \Closure) {
                         @$callable->bindTo($this,$this);
                     }
-                    $this->result = $callable();
-                    yield;
+                    $this->result = $callable($context);
+                    yield $this->result;
                 }
             };
             

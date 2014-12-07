@@ -3,8 +3,6 @@ namespace bubblr\Bubble {
     use bubblr\Spout\SpoutInterface;
     
     class GeneratorBubble extends IteratorBubble {
-        private $firstYield = false;
-        
         function __construct(\Generator $generator) {
             parent::__construct($generator);
         }

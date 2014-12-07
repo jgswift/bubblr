@@ -1,8 +1,9 @@
 <?php
 namespace bubblr\Bubble {
     use bubblr\Spout\SpoutInterface;
+    use observr\Event;
     
-    abstract class BubbleTask implements BubbleInterface {
+    abstract class BubbleTask extends Event implements BubbleInterface {
         use BubbleTrait;
         
         public function resume(SpoutInterface $spout) {
@@ -13,8 +14,8 @@ namespace bubblr\Bubble {
             $spout->suspend();
         }
         
-        public function cancel() {
-            $this->canceled = true;
-        }
+//        public function cancel() {
+//            $this->canceled = true;
+//        }
     }
 }

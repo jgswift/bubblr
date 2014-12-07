@@ -2,6 +2,7 @@
 namespace bubblr\Bubble {
     use bubblr\Spout\SpoutInterface;
     use bubblr\Exception;
+    use observr\Event;
     
     class DelayedBubble extends CallableBubble {
         protected $bubble = null;
@@ -45,13 +46,9 @@ namespace bubblr\Bubble {
             if(!$this->enabled) {
                 if(!$this->start) {
                     $this->start = new \DateTime;
-                    $spout->push($this);
-                } else {
-                    if($this->start->diff(new \DateTime)->s >= $this->delay) {
-                        $spout->push($this->bubble);
-                        $this->enabled = true;
-                        return;
-                    }
+                } elseif($this->start->diff(new \DateTime)->s > $this->delay) {
+                    $spout->push($this->bubble);
+                    $this->enabled = true;
                 }
             }
         }

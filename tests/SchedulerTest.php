@@ -110,7 +110,50 @@ namespace bubblr\Tests {
             $this->assertEquals(2,$c);
         }
         
+        private function microtime_float()
+        {
+            list($usec, $sec) = explode(" ", microtime());
+            return ((float)$usec + (float)$sec);
+        }
+        
         function testDelayedBubble() {
+            $bubbler = new bubblr\Bubbler\AggregateBubbler;
+            
+            $spout = new bubblr\Bubbler\BubblerSpout($bubbler);
+            
+            $c = 0;
+            $o = '';
+            
+            $delayedBubble = new bubblr\Bubble\CallableBubble(function()use(&$c, &$o) {
+                $c++;
+                $o.='3';
+            });
+            
+            $delayedBubble2 = new bubblr\Bubble\CallableBubble(function()use(&$c, &$o) {
+                $c++;
+                $o.='1';
+            });
+            
+            $delayedBubble3 = new bubblr\Bubble\CallableBubble(function()use(&$c, &$o) {
+                $c++;
+                $o.='2';
+            });
+            
+            $spout->push($delayedBubble2);
+            $spout->push(new bubblr\Bubble\DelayedBubble($delayedBubble,1));
+            $spout->push($delayedBubble3);
+            
+            $startTime = $this->microtime_float();
+            $bubbler->execute();
+            $endTime = $this->microtime_float();
+            
+            $duration = $endTime-$startTime;
+            $this->assertEquals(1,(int)$duration);
+            $this->assertEquals(3,$c);
+            $this->assertEquals('123',$o);
+        }
+        
+        function testThrottleBubble() {
             $bubbler = new bubblr\Bubbler\AggregateBubbler;
             
             $spout = new bubblr\Bubbler\BubblerSpout($bubbler);
@@ -119,13 +162,14 @@ namespace bubblr\Tests {
             
             $delayedBubble = new bubblr\Bubble\CallableBubble(function()use(&$c) {
                 $c++;
-            },10);
+            });
             
-            $spout->push(new bubblr\Bubble\DelayedBubble($delayedBubble,1));
+            $throttleBubble = new bubblr\Bubble\ThrottledBubble($delayedBubble,2);
+            
+            $spout->push($throttleBubble);
             
             $bubbler->execute();
-            
-            $this->assertEquals(10,$c);
+            $this->assertEquals(1,$c);
         }
         
         function testSpoutEvents() {
@@ -139,7 +183,7 @@ namespace bubblr\Tests {
                 
             },2);
             
-            $spout->push(new bubblr\Bubble\DelayedBubble($delayedBubble,1));
+            $spout->push(new bubblr\Bubble\DelayedBubble($delayedBubble,2));
             
             $spout->attach(\observr\Event::SUCCESS,function($bubble, $e)use(&$c) {
                 $c++;
@@ -150,7 +194,7 @@ namespace bubblr\Tests {
             });
             
             $bubbler->execute();
-            $this->assertEquals(3,$c);
+            $this->assertEquals(2,$c);
         }
         
         function testPromiseBubble() {

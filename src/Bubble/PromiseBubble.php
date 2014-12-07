@@ -17,7 +17,8 @@ namespace bubblr\Bubble {
         public function resume(SpoutInterface $spout) {
             $this->promise->then(
                 function($result = null) {
-                    $this->complete = true;
+                    $this->complete($this);
+                    //$this->complete = true;
                     $this->result = $result;
                 },
                 function($reason) {
