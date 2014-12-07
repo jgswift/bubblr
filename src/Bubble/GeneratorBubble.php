@@ -3,8 +3,12 @@ namespace bubblr\Bubble {
     use bubblr\Spout\SpoutInterface;
     
     class GeneratorBubble extends IteratorBubble {
-        function __construct(\Generator $generator) {
-            parent::__construct($generator);
+        protected $generatorCreate;
+        
+        function __construct(callable $generator) {
+            $this->generatorCreate = $generator;
+            
+            parent::__construct($generator());
         }
         
         public function getGenerator() {
@@ -12,6 +16,11 @@ namespace bubblr\Bubble {
         }
                
         public function resume(SpoutInterface $spout) {
+            if($this->isComplete()) {
+                $generatorCreate = $this->generatorCreate;
+                $this->iterator = $generatorCreate();
+            }
+            
             return $this->iterator->send($this->result);
         }
     }

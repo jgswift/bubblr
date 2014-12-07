@@ -28,7 +28,7 @@ namespace bubblr\Tests {
         
         function testAggregateSpout() {
             $bubbler = new bubblr\Bubbler\AggregateBubbler;
-            $spout1 = new bubblr\Bubbler\BubblerSpout($bubbler);
+            new bubblr\Bubbler\BubblerSpout($bubbler);
             
             $c=0;
             $bubbler->execute(function()use(&$c) {
@@ -38,6 +38,25 @@ namespace bubblr\Tests {
             $spout = $bubbler->getSpout();
             
             $this->assertInstanceOf('bubblr\Spout\AggregateSpout',$spout);
+            $this->assertEquals(2,$c);
+        }
+        
+        function testSpoutRepush() {
+            $bubbler = new bubblr\Bubbler\AggregateBubbler;
+            
+            $spout = $bubbler->getSpout();
+            
+            $c = 0;
+            
+            $bubble = new bubblr\Bubble\CallableBubble(function($bubble)use(&$c) {
+                $c++;
+            });
+            
+            $spout->push($bubble,1);
+            $spout->push($bubble,1);
+            
+            $bubbler->execute();
+            
             $this->assertEquals(2,$c);
         }
         
@@ -213,7 +232,7 @@ namespace bubblr\Tests {
         function testAggregateBubble() {
             $bubbler = new bubblr\Bubbler\AggregateBubbler;
             
-            $spout = new bubblr\Bubbler\BubblerSpout($bubbler);
+            $spout = $bubbler->getSpout();
             
             $c = 0;
             
@@ -225,12 +244,10 @@ namespace bubblr\Tests {
                 $c++;
             };
             
-            $spout->attach(\observr\Event::COMPLETE,function($bubble,$e)use(&$c) {
-                $c++;
-            });
+            $spout->push(new bubblr\Bubble\AggregateBubble($bubbles));
             
-            $bubbler->execute(new bubblr\Bubble\AggregateBubble($bubbles));
-            $this->assertEquals(3,$c);
+            $bubbler->execute();
+            $this->assertEquals(2,$c);
         }
     }
 }

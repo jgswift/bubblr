@@ -12,14 +12,14 @@ namespace bubblr\Bubble {
                 $context = yield;
                 for($i=1;$i<=$count;$i++) {
                     if($callable instanceof \Closure) {
-                        @$callable->bindTo($this,$this);
+                        $callable->bindTo($this,$this);
                     }
-                    $this->result = $callable($context);
+                    $this->result = $callable($this,$context);
                     yield $this->result;
                 }
             };
             
-            parent::__construct($generator());
+            parent::__construct($generator);
         }
         
         function getCallable() {

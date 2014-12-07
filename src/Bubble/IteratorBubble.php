@@ -18,6 +18,9 @@ namespace bubblr\Bubble {
         }
         
         public function resume(SpoutInterface $spout) {
+            if($this->isComplete()) {
+                $this->iterator->rewind();
+            }
             $this->iterator->next();
         }
     }
