@@ -249,5 +249,75 @@ namespace bubblr\Tests {
             $bubbler->execute();
             $this->assertEquals(2,$c);
         }
+        
+        function testResultHandling() {
+            $bubbler = new bubblr\Bubbler\AggregateBubbler;
+            
+            $spout = new bubblr\Bubbler\BubblerSpout($bubbler);
+            
+            $c = 0;
+            
+            $spout->push(new bubblr\Bubble\CallableBubble(function()use(&$c) {
+                $c++;
+                return 'hello';
+            }));
+            
+            $spout->push(new bubblr\Bubble\CallableBubble(function()use(&$c) {
+                $c++;
+                return 'world';
+            }));
+            
+            
+            $result = $bubbler->execute();
+            $this->assertEquals([
+                'hello',
+                'world'
+            ], $result);
+            
+            $this->assertEquals(2,$c);
+        }
+        
+        function testAsyncPrequeue() {
+            $bubbler = new bubblr\Bubbler\AggregateBubbler;
+            
+            $spout = new bubblr\Bubbler\BubblerSpout($bubbler);
+            
+            $c = 0;
+            
+            $spout->push(new bubblr\Bubble\CallableBubble(function($bubble)use(&$c,$spout) {
+                $spout->execute();
+                $c++;
+                return 'hello';
+            }));
+            
+            $spout->push(new bubblr\Bubble\CallableBubble(function($bubble)use(&$c) {
+                $c++;
+                return 'world';
+            }));
+            
+            $result = $bubbler->execute();
+            
+            $this->assertEquals([
+                'world',
+                'hello'
+            ],$result);
+            
+            $this->assertEquals(2,$c);
+        }
+        
+        function testBubblerAsync() {
+            $c = 0;
+            
+            $hello = \bubblr\Bubbler::async(function()use(&$c) {
+                $c++;
+                return 'hello world';
+            });
+            
+            $result = $hello();
+            
+            $this->assertEquals('hello world',$result);
+            
+            $this->assertEquals(1,$c);
+        }
     }
 }

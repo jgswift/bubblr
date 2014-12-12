@@ -32,10 +32,13 @@ namespace bubblr\Bubbler {
         }
 
         public function execute($bubble = null) {
+            $results = [];
             foreach($this->spout as $spout) {
                 $spout->setBubbler($this);
-                $spout->execute($bubble);
+                $results = array_merge($results,$spout->execute($bubble));
             }
+            
+            return $results;
         }
         
         public function resume() {

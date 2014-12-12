@@ -13,5 +13,12 @@ namespace bubblr\Bubble {
         public function suspend(SpoutInterface $spout) {
             $spout->suspend();
         }
+        
+        public function __invoke() {
+            $result = \bubblr\Bubbler::spout($this);
+            if(!empty($result)) {
+                return $result[0];
+            }
+        }
     }
 }

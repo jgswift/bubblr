@@ -6,6 +6,8 @@ namespace bubblr\Spout {
     trait SpoutTrait {
         protected $bubbles = [];
         
+        protected $resultSet;
+        
         /**
          *
          * @var bubblr\Bubbler\BubblerInterface
@@ -23,6 +25,8 @@ namespace bubblr\Spout {
         }
     
         public function execute($bubble=null) {
+            $this->resultSet = [];
+            
             if(!$this->enabled) {
                 throw new Exception\SpoutDisabledException($this);
             }
@@ -34,16 +38,22 @@ namespace bubblr\Spout {
             }
             
             while(!empty($this->bubbles)) {
-                $bubble = $this->pop();
-                
-                $this->invoke($bubble);
-                
-                if(!$bubble->isComplete()) {
-                    $this->push($bubble);
-                }
+                $this->drain();
             }
             
-            return $this;
+            return $this->resultSet;
+        }
+        
+        public function drain() {
+            $bubble = $this->pop();
+                
+            $this->invoke($bubble);
+
+            if(!$bubble->isComplete()) {
+                $this->push($bubble);
+            } else {
+                $this->resultSet[] = $bubble->getResult();
+            }
         }
 
         public function getBubbler() {
