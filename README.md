@@ -1,6 +1,6 @@
 bubblr
 ====
-Asynchronous cooperative task scheduler
+Asynchronous cooperative task scheduler 
 
 [![Build Status](https://travis-ci.org/jgswift/bubblr.png?branch=master)](https://travis-ci.org/jgswift/bubblr)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/jgswift/bubblr/badges/quality-score.png?s=87a44242339b2b007df16d5847b06c0246500931)](https://scrutinizer-ci.com/g/jgswift/bubblr/)
