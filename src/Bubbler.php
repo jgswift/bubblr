@@ -30,7 +30,8 @@ namespace bubblr {
         
         public static function async($callable) {
             if(is_callable($callable) ||
-               is_array($callable)) {
+               is_array($callable) ||
+               (is_string($callable) && function_exists($callable))) {
                 return new CallableBubble($callable);
             } 
                 

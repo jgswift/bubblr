@@ -2,6 +2,10 @@
 namespace bubblr\Tests {
     use bubblr;
     
+    function apredefinedFunc() {
+        return 'hello world';
+    }
+    
     class SchedulerTest extends BubblrTestCase {
         
         function testBubbler() {
@@ -336,6 +340,20 @@ namespace bubblr\Tests {
             $hellos = \bubblr\asyncAll([
                 [$this,'predefinedFunc'],
                 [$this,'predefinedFunc']
+            ]);
+            
+            $result = $hellos();
+            
+            $this->assertEquals([
+                'hello world',
+                'hello world'
+            ], $result);
+        }
+        
+        function testAsyncStringAll() {
+            $hellos = \bubblr\asyncAll([
+                'bubblr\Tests\apredefinedFunc',
+                'bubblr\Tests\apredefinedFunc'
             ]);
             
             $result = $hellos();

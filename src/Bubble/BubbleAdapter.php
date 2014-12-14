@@ -9,7 +9,7 @@ namespace bubblr\Bubble {
                 return $value;
             } elseif($value instanceof \Generator) {
                 return new GeneratorBubble($value);
-            } elseif(is_callable($value)) {
+            } elseif(is_callable($value) || (is_string($value) && function_exists($value))) {
                 return new CallableBubble($value);
             } elseif($value instanceof PromiseInterface) {
                 return new PromiseBubble($value);
