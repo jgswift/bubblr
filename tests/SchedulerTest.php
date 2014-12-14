@@ -364,6 +364,18 @@ namespace bubblr\Tests {
             ], $result);
         }
         
+        function testAsyncString() {
+            $hello = \bubblr\async(
+                'bubblr\Tests\apredefinedFunc'
+            );
+            
+            $result = $hello();
+            
+            $this->assertEquals(
+                'hello world'
+            , $result);
+        }
+        
         function testFibonacci() {
             $fib = \bubblr\async(function($num) {
                 $n1 = 0; $n2 = 1; $n3 = 1;

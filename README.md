@@ -120,7 +120,7 @@ function hello() {
     return 'hello world';
 }
 
-$hello = bubblr\async(['hello']);
+$hello = bubblr\async('hello');
 
 echo $hello(); // 'hello world'
 ```
