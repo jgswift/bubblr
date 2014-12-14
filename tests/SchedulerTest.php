@@ -48,7 +48,7 @@ namespace bubblr\Tests {
             
             $c = 0;
             
-            $bubble = new bubblr\Bubble\CallableBubble(function($bubble)use(&$c) {
+            $bubble = new bubblr\Bubble\CallableBubble(function()use(&$c) {
                 $c++;
             });
             
@@ -221,7 +221,7 @@ namespace bubblr\Tests {
             
             $bubble = new bubblr\Bubble\PromiseBubble($promise);
             
-            bubblr\Bubbler::spout($bubble);
+            \bubblr\spout($bubble);
             
             $this->assertTrue($bubble->isComplete());
             $this->assertFalse($bubble->isFailure());
@@ -284,13 +284,13 @@ namespace bubblr\Tests {
             
             $c = 0;
             
-            $spout->push(new bubblr\Bubble\CallableBubble(function($bubble)use(&$c,$spout) {
-                $spout->execute();
+            $spout->push(new bubblr\Bubble\CallableBubble(function()use(&$c,$spout) {
+                \bubblr\reschedule($spout);
                 $c++;
                 return 'hello';
             }));
             
-            $spout->push(new bubblr\Bubble\CallableBubble(function($bubble)use(&$c) {
+            $spout->push(new bubblr\Bubble\CallableBubble(function()use(&$c) {
                 $c++;
                 return 'world';
             }));
@@ -308,7 +308,7 @@ namespace bubblr\Tests {
         function testBubblerAsync() {
             $c = 0;
             
-            $hello = \bubblr\Bubbler::async(function()use(&$c) {
+            $hello = \bubblr\async(function()use(&$c) {
                 $c++;
                 return 'hello world';
             });
@@ -318,6 +318,51 @@ namespace bubblr\Tests {
             $this->assertEquals('hello world',$result);
             
             $this->assertEquals(1,$c);
+        }
+        
+        public function predefinedFunc() {
+            return 'hello world';
+        }
+        
+        function testPredefinedAsync() {
+            $hello = \bubblr\async([$this,'predefinedFunc']);
+            
+            $result = $hello();
+            
+            $this->assertEquals('hello world', $result);
+        }
+        
+        function testAsyncAll() {
+            $hellos = \bubblr\asyncAll([
+                [$this,'predefinedFunc'],
+                [$this,'predefinedFunc']
+            ]);
+            
+            $result = $hellos();
+            
+            $this->assertEquals([
+                'hello world',
+                'hello world'
+            ], $result);
+        }
+        
+        function testFibonacci() {
+            $fib = \bubblr\async(function($num) {
+                $n1 = 0; $n2 = 1; $n3 = 1;
+                for ($i = 2; $i < $num; ++$i) {
+                    $n3 = $n1 + $n2;
+                    $n1 = $n2;
+                    $n2 = $n3;
+                    if (!($i % 50)) {
+                          \bubblr\reschedule();
+                    }
+                }
+                return $n3;
+            });
+            
+            $result = $fib(3000);
+            
+            $this->assertEquals(true, is_infinite($result));
         }
     }
 }

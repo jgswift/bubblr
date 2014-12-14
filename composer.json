@@ -24,6 +24,9 @@
         "psr-4": {
             "bubblr\\": "src/",
             "bubblr\\Tests\\": "tests/"
-        }
+        },
+        "files": [
+            "src/fn.php"
+        ]
     }
 }

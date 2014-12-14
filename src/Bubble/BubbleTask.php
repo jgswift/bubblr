@@ -15,7 +15,7 @@ namespace bubblr\Bubble {
         }
         
         public function __invoke() {
-            $result = \bubblr\Bubbler::spout($this);
+            $result = \bubblr\Bubbler::spout($this, func_get_args());
             if(!empty($result)) {
                 return $result[0];
             }

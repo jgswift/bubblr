@@ -13,6 +13,10 @@ namespace bubblr\Bubble {
             return $this->result;
         }
         
+        public function setContext($context) {
+            $this->result = $context;
+        }
+        
         abstract public function resume(SpoutInterface $spout);
         
         abstract public function suspend(SpoutInterface $spout);

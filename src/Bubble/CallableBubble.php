@@ -4,17 +4,25 @@ namespace bubblr\Bubble {
         private $callable;
         private $count;
         
-        function __construct(callable $callable, $count = 1) {
+        function __construct($callable, $count = 1) {
             $this->callable = $callable;
             $this->count = $count;
             
             $generator = function()use($callable,$count) {
                 $context = yield;
+                if($context === null) {
+                    $context = [];
+                } elseif(!is_array($context)) {
+                    $context = [$context];
+                }
+                
                 for($i=1;$i<=$count;$i++) {
                     if($callable instanceof \Closure) {
                         $callable->bindTo($this,$this);
                     }
-                    $this->result = $callable($this,$context);
+                    
+                    $this->result = call_user_func_array($callable,$context);
+                    
                     yield $this->result;
                 }
             };
