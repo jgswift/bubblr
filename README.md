@@ -163,3 +163,21 @@ $results = bubblr\asyncAll([
 
 var_dump($results); // Array ['hello','world']
 ```
+
+### Throwing and handling exceptions
+
+```php
+$addition = bubblr\async(function($a,$b) {
+    if(!is_numeric($a) || !is_numeric($b)) {
+        throw new \InvalidArgumentException();
+    }
+
+    return $a + $b;
+});
+
+try {
+    $addition('bar',5);
+} catch(\InvalidArgumentException $e) {
+    echo 'Invalid argument';
+}
+```

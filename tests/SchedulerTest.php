@@ -394,5 +394,20 @@ namespace bubblr\Tests {
             
             $this->assertEquals(true, is_infinite($result));
         }
+        
+        /**
+         * @expectedException InvalidArgumentException
+         */
+        function testExceptionThrown() {
+            $addition = \bubblr\async(function($a,$b) {
+                if(!is_numeric($a) || !is_numeric($b)) {
+                    throw new \InvalidArgumentException();
+                }
+                
+                return $a + $b;
+            });
+            
+            $result = $addition(5,'foo');
+        }
     }
 }
