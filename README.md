@@ -59,7 +59,8 @@ interface BubbleInterface extends EventInterface, EventAwareInterface {
 
 Spouts act as the scheduler queue to handle coroutine execution.  
 This is conceptually similar to a thread but must be differentiated as coroutines are executed in sequence.
-Coroutines may yield execution priority back to the spout to allow individual coroutines to allow other tasks to execute.
+Coroutines may yield execution priority back to the spout, therein allowing other tasks to execute instead.
+For more information, [Nikita Popov](https://github.com/nikic) authored a [fairly comprehesive introduction](https://nikic.github.io/2012/12/22/Cooperative-multitasking-using-coroutines-in-PHP.html) to the subject of cooperative multitasking in PHP.
 
 #### SpoutInterface (abbr.)
 
